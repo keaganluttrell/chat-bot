@@ -1,0 +1,29 @@
+image:
+
+definitions:
+  steps:
+    - step: &ecr
+        name: Publish to AWS ECR
+        image: amazon/aws-cli
+        oidc: true
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - export AWS_ROLE_ARN="${AWS_ABENITY_ROLE_ARN}"
+          - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+          - echo "${BITBUCKET_STEP_OIDC_TOKEN}" > $(pwd)/web-identity-token
+          - aws configure set web_identity_token_file ${AWS_WEB_IDENTITY_TOKEN_FILE}
+          - aws configure set role_arn ${AWS_ROLE_ARN}
+          - aws configure set region ${AWS_REGION}
+          - IMAGE_NAME=${ECR_URI}/assistant
+          - TAG="${BITBUCKET_BUILD_NUMBER}"
+          - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_URI}
+          - docker build -t ${IMAGE_NAME}:${TAG} .
+          - docker tag ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:latest
+          - docker push ${IMAGE_NAME}:${TAG}
+          - docker push ${IMAGE_NAME}:latest
+pipelines:
+  default:
+    - step: *ecr

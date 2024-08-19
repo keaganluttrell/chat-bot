@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="light dark" />
+		<title>Test Assistant</title>
+		<script src="https://unpkg.com/htmx.org@2.0.0"></script>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+		<style>
+			#spinner.loading {
+				display: none;
+			}
+
+			#spinner.loading.htmx-request {
+				display: inline-block;
+				width: 100%;
+			}
+
+			#submit.loading.htmx-request {
+				display: none;
+			}
+
+			#error {
+				color: red;
+			}
+
+			main {
+				max-width: 50em;
+				margin: 0 auto;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1 class="center">Test Assistant</h1>
+			<form
+				hx-post="/ai"
+				hx-trigger="submit"
+				hx-swap="innerHTML"
+				hx-target="#ai-target"
+				hx-indicator=".loading">
+				<label for="question">Please enter your question:</label>
+				<fieldset>
+					<input
+						type="text"
+						id="question"
+						name="question"
+						placeholder="question" />
+					<button id="submit" type="submit" class="loading" aria-label="Submit">
+						Submit
+					</button>
+					<button
+						id="spinner"
+						class="loading"
+						aria-busy="true"
+						aria-label="Generating your results...">
+						Generating your results...
+					</button>
+				</fieldset>
+			</form>
+			<div id="error"></div>
+			<div id="ai-target"></div>
+			<script>
+				function validateInput(event) {
+					var input = document.getElementById("question").value;
+					if (input.trim() === "") {
+						event.preventDefault();
+						document.getElementById("error").innerText =
+							"Please enter a question.";
+					} else {
+						document.getElementById("error").innerText = "";
+					}
+				}
+
+				document
+					.querySelector("form")
+					.addEventListener("submit", function (event) {
+						validateInput(event);
+					});
+			</script>
+		</main>
+	</body>
+</html>
