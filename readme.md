@@ -8,6 +8,8 @@ Add your OPEN API KEY to a `.env` file
 
 Add your Assistant to the `.env` file
 
+You can enhance you experience by adding data to your chat-gpt assistant.
+
 ## Express Server
 
 `npm run start`

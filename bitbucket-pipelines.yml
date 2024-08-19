@@ -11,7 +11,7 @@ definitions:
         caches:
           - docker
         script:
-          - export AWS_ROLE_ARN="${AWS_ABENITY_ROLE_ARN}"
+          - export AWS_ROLE_ARN="${AWS_ROLE_ARN}"
           - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
           - echo "${BITBUCKET_STEP_OIDC_TOKEN}" > $(pwd)/web-identity-token
           - aws configure set web_identity_token_file ${AWS_WEB_IDENTITY_TOKEN_FILE}
